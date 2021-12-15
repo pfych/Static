@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2231
+
 shopt -s failglob
 set -eu -o pipefail
 
@@ -30,14 +32,14 @@ find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 
 # Compile Blogs
 for file in $BLOG_LOCATION/*; do
-  NAME="$(basename $file)"
-  pandoc $file -o ./out/blog/${NAME%-write.md}.html --template ./src/blog/index.html
+  NAME="$(basename "$file")"
+  pandoc "$file" -o ./out/blog/"${NAME%-write.md}".html --template ./src/blog/index.html
 done
 
 # Create a table of contents
 TOC=()
 for file in $BLOG_LOCATION/*; do
-  NAME="$(basename $file)"
+  NAME="$(basename "$file")"
   TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md}</a>")
 done
 

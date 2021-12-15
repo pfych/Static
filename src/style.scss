@@ -1,0 +1,75 @@
+body {
+  p,
+  td,
+  a {
+    color: #000;
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  .container {
+    max-width: 70ch;
+    padding: 0 16px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  p {
+    margin-bottom: 8px;
+  }
+
+  pre {
+    font-size: 22px;
+    overflow: auto;
+    background: #eee;
+    margin: unset;
+    padding: 8px;
+
+    code {
+      > span {
+        &:not(:first-of-type) {
+          margin-left: -25px;
+        }
+      }
+    }
+  }
+
+  blockquote {
+    display: flex;
+    margin-left: unset;
+    font-style: italic;
+
+    &:before {
+      font-size: 22px;
+      flex: 0 0 auto;
+      content: ">";
+      margin-right: 1ch;
+    }
+
+    p {
+      flex: 1 1 auto;
+      margin: unset;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #000;
+
+    p,
+    td,
+    a,
+    h1,
+    pre,
+    blockquote:before {
+      color: #fff;
+    }
+
+    pre {
+      background: #111;
+    }
+  }
+}
+
+

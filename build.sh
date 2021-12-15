@@ -4,7 +4,6 @@
 shopt -s failglob
 set -eu -o pipefail
 
-# Get Path to root directory assuming this script sits 1 folder above root
 PARENT_PATH="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/"
 cd "$PARENT_PATH"
 

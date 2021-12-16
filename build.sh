@@ -30,29 +30,48 @@ cp src/index.html out/
 find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 
 # Compile Blogs
-for file in $BLOG_LOCATION/*; do
+for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   pandoc "$file" -o ./out/blog/"${NAME%-write.md}".html --template ./src/blog/index.html
 done
 
+# Move images
+for file in $BLOG_LOCATION/images/*; do
+  cp "$file" ./out/blog/images/
+done
+
+# Dither images
+for file in $BLOG_LOCATION/images/*; do
+  NAME="$(basename "$file")"
+  convert "$file" \
+    -set colorspace Gray \
+    -colors 8 \
+    -alpha on \
+    +dither \
+    -ordered-dither o8x8 \
+    -resize 384 \
+    ./out/blog/images/${NAME%.*}-grey.gif;
+
+done
 # Create a table of contents
 TOC=()
-for file in $BLOG_LOCATION/*; do
+for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
-  TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md}</a>")
+  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
+  TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md} - $TITLE</a>")
 done
 
 TOCString=$(printf '%s' "${TOC[@]}")
 sed -i -e "s|TOC|$TOCString|g" ./out/index.html
 
 # Deploy to AWS
-aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
-aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
-aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
-CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
-if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
-  echo "No cloudfront cache"
-else
-  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
-  echo "Invalidated cache"
-fi
+#aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
+#aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
+#aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
+#CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
+#if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
+#  echo "No cloudfront cache"
+#else
+#  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
+#  echo "Invalidated cache"
+#fi

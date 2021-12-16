@@ -54,6 +54,24 @@ body {
     }
   }
 
+  .tableOfContents {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  figure {
+    margin: unset;
+
+    img {
+      width: 100%;
+      object-fit: contain;
+    }
+
+    figcaption {
+      font-style: italic;
+    }
+  }
+
   @media (prefers-color-scheme: dark) {
     background-color: #000;
 
@@ -62,7 +80,8 @@ body {
     a,
     h1,
     pre,
-    blockquote:before {
+    blockquote:before,
+    figcaption {
       color: #fff;
     }
 

@@ -18,3 +18,40 @@
 
 </body>
 </html>
+<script>
+  /** This code is for the dithered image to coloured image thing */
+  const initialImages = []
+  Array.prototype.forEach.call( document.images, function( img ) {
+    initialImages.push(img)
+  });
+
+  initialImages.map((img) => {
+    let imageElement = document.createElement('img');
+    imageElement.setAttribute('loading', 'lazy');
+    imageElement.setAttribute('src', img.src.replace('-grey.png', '.jpg'));
+    imageElement.setAttribute('class', 'highRes');
+
+    img.addEventListener('click', () => {
+      imageElement.setAttribute('class', 'highRes visible')
+      img.setAttribute('class', 'dithered hidden')
+    });
+
+    img.parentNode.prepend(imageElement)
+
+    const ditherColours = [
+      '#ddd8b8',
+      '#ddb8c2',
+      '#b8ccdd',
+      '#b3cbb9',
+      '#cbc1b3',
+      '#cbb3c8',
+      '#84a9c0',
+      '#c0b784',
+      '#c08496'
+    ]
+
+    img.parentNode.style.background = ditherColours[
+      Math.floor(Math.random() * (ditherColours.length))
+    ]
+  });
+</script>

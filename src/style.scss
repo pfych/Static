@@ -16,8 +16,14 @@ body {
     font-size: 32px;
   }
 
+  h2 {
+    font-size: 28px;
+  }
+
   p {
+    margin-top: unset;
     margin-bottom: 8px;
+    position: relative;
   }
 
   pre {
@@ -64,39 +70,44 @@ body {
     margin: unset;
     background: #fff;
 
-    img {
-      display: block;
-      width: 100%;
-      object-fit: contain;
-      image-rendering: pixelated;
-      transition: all 500ms ease-in-out;
-
-      &.highRes {
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        cursor: pointer;
-
-        &.visible {
-          opacity: 1;
-        }
-      }
-
-      &.dithered {
-        mix-blend-mode: hard-light;
-        cursor: pointer;
-        opacity: 1;
-
-        &.hidden {
-          opacity: 0;
-        }
-      }
-    }
-
     figcaption {
       font-style: italic;
       padding-top: 8px;
+      margin-bottom: 8px;
+
+      &::before {
+        content: "┗ "
+      }
+    }
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    transition: all 500ms ease-in-out;
+
+    &.highRes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+
+      &.visible {
+        opacity: 1;
+      }
+    }
+
+    &.dithered {
+      mix-blend-mode: hard-light;
+      cursor: pointer;
+      opacity: 1;
+
+      &.hidden {
+        opacity: 0;
+      }
     }
   }
 
@@ -107,6 +118,7 @@ body {
     td,
     a,
     h1,
+    h2,
     pre,
     blockquote:before,
     figcaption {

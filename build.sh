@@ -42,7 +42,7 @@ for file in $BLOG_LOCATION/images/*; do
   NAME="$(basename "$file")"
   if [ ! -f "./out/blog/images/${NAME%.*}.jpg;" ]; then
     convert "$file" \
-      -resize 560 \
+      -resize 720 \
       "./out/blog/images/${NAME%.*}.jpg";
   fi
 done
@@ -53,7 +53,7 @@ for file in $BLOG_LOCATION/images/*; do
   NAME="$(basename "$file")"
   if [ ! -f "./out/blog/images/${NAME%.*}-grey.png" ]; then
     convert "$file" \
-      -resize 560 \
+      -resize 720 \
       -alpha on \
       +dither \
       \( -size 2x2 xc:black -size 1x1 xc:white -gravity northwest -composite -write mpr:tile +delete \) \

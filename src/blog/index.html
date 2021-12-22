@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"></meta>
   <title>pfych - $title$</title>
   <link href="../bundle.css" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+
+  <meta name="og:title" content="$title$"></meta>
+
+  <meta name="twitter:site" content="@puffycheeses"></meta>
+  $if(attribution)$
+    <meta name="twitter:creator" content="@$attribution$"></meta>
+  $else$
+    <meta name="twitter:creator" content="@puffycheeses"></meta>
+  $endif$
+
+  $if(image)$
+    <meta name="og:image" content="https://pfy.ch/blog/images/$image$"></meta>
+    <meta name="twitter:image" content="https://pfy.ch/blog/images/$image$"></meta>
+    <meta name="twitter:card" content="summary_large_image"></meta>
+    $if(alt)$
+      <meta name="twitter:image:alt" content="$alt$"></meta>
+    $endif$
+  $else$
+    <meta name="twitter:card" content="summary"></meta>
+  $endif$
+
+  $if(summary)$
+    <meta name="og:description" content="$summary$"></meta>
+  $endif$
 </head>
 <body>
 <div class="container">

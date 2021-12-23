@@ -3,7 +3,12 @@ This repo is the code that powers the website [pfy.ch](https://pfy.ch).
 
 ## Requires:
 - `pandoc`
+- `sass`
 - `aws-cli` (Optional)
+
+```
+yay -Syu pandoc sass aws-cli
+```
 
 ## Build:
 - Edit `build.sh` and replace `$BLOG_LOCATION` with a path to your markdown files.

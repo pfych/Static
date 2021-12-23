@@ -4,13 +4,26 @@
 shopt -s failglob
 set -eu -o pipefail
 
-PARENT_PATH="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/"
-cd "$PARENT_PATH"
+###############
+# USER CONFIG #
+###############
 
 export AWS_REGION='ap-southeast-2'
 BLOG_LOCATION=/home/pfych/Documents/Scratchpad-write
 DOMAIN_NAME='pfy.ch'
 DOMAIN_BASE='www'
+# We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
+FILE_PREFIX='-write' 
+# What time of day should RSS report?
+RSS_TIME='00:00:00 AEST'
+
+##########
+# SCRIPT #
+##########
+
+PARENT_PATH="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/"
+cd "$PARENT_PATH"
+
 BUCKET_NAME="${DOMAIN_BASE}.${DOMAIN_NAME}"
 POLICY="{
   \"Version\": \"2012-10-17\",
@@ -37,7 +50,7 @@ find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 echo "Running pandoc..."
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
-  pandoc "$file" -o ./out/blog/"${NAME%-write.md}".html --template ./src/blog/index.html
+  pandoc "$file" -o ./out/blog/"${NAME%$FILE_PREFIX.md}".html --template ./src/blog/index.html
 done
 
 # Create a table of contents
@@ -46,7 +59,7 @@ TOC=()
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
-  TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md} - $TITLE</a>")
+  TOC+=("<a href='/blog/${NAME%$FILE_PREFIX.md}.html'>${NAME%$FILE_PREFIX.md} - $TITLE</a>")
 done
 
 TOCString=$(printf '%s' "${TOC[@]}")
@@ -59,12 +72,12 @@ for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
   DESCRIPTION="$(grep "summary:" "$file" | sed 's/[^ ]* //')"
-  PUB_DATE="$(date -d"${NAME%-write.md}" +"%A, %d %b %Y 00:00:00 AEST")"
+  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%A, %d %b %Y $RSS_TIME")"
 
   RSS_ITEMS+=("
     <item>
       <title>${TITLE}</title>
-      <link>https://${DOMAIN_NAME}/blog/${NAME%-write.md}.html</link>
+      <link>https://${DOMAIN_NAME}/blog/${NAME%$FILE_PREFIX.md}.html</link>
       <description>${DESCRIPTION:-"New post"}</description>
       <pubDate>${PUB_DATE}</pubDate>
     </item>
@@ -78,7 +91,8 @@ sed -i -e "s|RSS_PLACEHOLDER|$RSS_STRING|g" ./out/rss.xml
 echo "Resizing images..."
 for file in $BLOG_LOCATION/images/*; do
   NAME="$(basename "$file")"
-  if [ ! -f "./out/blog/images/${NAME%.*}.jpg;" ]; then
+  if [ ! -f "./out/blog/images/${NAME%.*}.jpg" ]; then
+    echo "Resizing: $file"
     convert "$file" \
       -resize 720 \
       "./out/blog/images/${NAME%.*}.jpg";
@@ -90,6 +104,7 @@ echo "Dithering images..."
 for file in $BLOG_LOCATION/images/*; do
   NAME="$(basename "$file")"
   if [ ! -f "./out/blog/images/${NAME%.*}-grey.png" ]; then
+    echo "Dithering $file"
     convert "$file" \
       -resize 720 \
       -alpha on \

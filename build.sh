@@ -26,7 +26,11 @@ POLICY="{
 }"
 
 # Move files
+mkdir -p out/
+mkdir -p out/blog/
+mkdir -p out/blog/images
 cp src/index.html out/
+cp src/rss.xml out/
 find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 
 # Compile Blogs
@@ -35,6 +39,40 @@ for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   pandoc "$file" -o ./out/blog/"${NAME%-write.md}".html --template ./src/blog/index.html
 done
+
+# Create a table of contents
+echo "Creating table of contents..."
+TOC=()
+for file in $BLOG_LOCATION/*.md; do
+  NAME="$(basename "$file")"
+  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
+  TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md} - $TITLE</a>")
+done
+
+TOCString=$(printf '%s' "${TOC[@]}")
+sed -i -e "s|TOC|$TOCString|g" ./out/index.html
+
+# Create RSS feed
+RSS_ITEMS=()
+echo "Creating RSS feed..."
+for file in $BLOG_LOCATION/*.md; do
+  NAME="$(basename "$file")"
+  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
+  DESCRIPTION="$(grep "summary:" "$file" | sed 's/[^ ]* //')"
+  PUB_DATE="$(date -d"${NAME%-write.md}" +"%A, %d %b %Y 00:00:00 AEST")"
+
+  RSS_ITEMS+=("
+    <item>
+      <title>${TITLE}</title>
+      <link>https://${DOMAIN_NAME}/blog/${NAME%-write.md}.html</link>
+      <description>${DESCRIPTION:-"New post"}</description>
+      <pubDate>${PUB_DATE}</pubDate>
+    </item>
+  ")
+done
+
+RSS_STRING=$(printf '%s' "${RSS_ITEMS[@]}" | tr -d '\n')
+sed -i -e "s|RSS_PLACEHOLDER|$RSS_STRING|g" ./out/rss.xml
 
 # Move images
 echo "Resizing images..."
@@ -64,18 +102,6 @@ for file in $BLOG_LOCATION/images/*; do
       "./out/blog/images/${NAME%.*}-grey.png";
   fi
 done
-
-# Create a table of contents
-echo "Creating table of contents..."
-TOC=()
-for file in $BLOG_LOCATION/*.md; do
-  NAME="$(basename "$file")"
-  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
-  TOC+=("<a href='/blog/${NAME%-write.md}.html'>${NAME%-write.md} - $TITLE</a>")
-done
-
-TOCString=$(printf '%s' "${TOC[@]}")
-sed -i -e "s|TOC|$TOCString|g" ./out/index.html
 
 # Deploy to AWS
 echo "Deploying..."

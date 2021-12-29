@@ -125,16 +125,16 @@ for file in $BLOG_LOCATION/images/*; do
 done
 
 # Deploy to AWS
-#echo "Deploying..."
-#aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
-#aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
-#aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
-#CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
-#if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
-#  echo "No cloudfront cache"
-#else
-#  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
-#  echo "Invalidated cache"
-#fi
+echo "Deploying..."
+aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
+aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
+aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
+CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
+if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
+  echo "No cloudfront cache"
+else
+  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
+  echo "Invalidated cache"
+fi
 
 echo "Done!"

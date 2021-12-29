@@ -33,6 +33,17 @@
 </head>
 <body>
 <div class="container">
+  $if(draft)$
+    <h1>THIS IS AN UN-EDITED DRAFT</h1>
+    <p>
+      This post has been marked as a draft meaning it 
+      has not been published in the TOC or RSS.
+    </p>
+    <p>
+      If you beleive this to be an error please contact me.
+    </p>
+    <hr />
+  $endif$
   <h1><a href="/"><</a> $title$</h1>
   $body$
   <hr />

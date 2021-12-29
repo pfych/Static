@@ -1,7 +1,8 @@
 body {
   p,
   td,
-  a {
+  a,
+  .rss {
     color: #000;
     font-size: 22px;
     font-weight: 400;
@@ -22,7 +23,7 @@ body {
 
   p {
     margin-top: unset;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     position: relative;
   }
 
@@ -85,7 +86,6 @@ body {
     display: block;
     width: 100%;
     object-fit: contain;
-    image-rendering: pixelated;
     transition: all 500ms ease-in-out;
 
     &.highRes {
@@ -104,6 +104,7 @@ body {
       mix-blend-mode: hard-light;
       cursor: pointer;
       opacity: 1;
+      image-rendering: pixelated;
 
       &.hidden {
         opacity: 0;
@@ -121,7 +122,8 @@ body {
     h2,
     pre,
     blockquote:before,
-    figcaption {
+    figcaption,
+    .rss {
       color: #fff;
     }
 

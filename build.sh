@@ -41,9 +41,11 @@ POLICY="{
 mkdir -p out/
 mkdir -p out/blog/
 mkdir -p out/blog/images
+mkdir -p out/fonts/
 cp src/index.html out/
 cp src/404.html out/
 cp src/rss.xml out/
+cp src/fonts/* out/fonts
 find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 
 # Compile Blogs

@@ -1,4 +1,43 @@
+@font-face {
+  font-family: "Source Serif Pro";
+  font-weight: normal;
+  font-style: normal;
+  src: url("./fonts/SourceSerifPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-weight: bold;
+  font-style: normal;
+  src: url("./fonts/SourceSerifPro-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-weight: normal;
+  font-style: italic;
+  src: url("./fonts/SourceSerifPro-Italic.ttf");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-weight: bold;
+  font-style: italic;
+  src: url("./fonts/SourceSerifPro-BoldItalic.ttf");
+}
+
 body {
+  p,
+  td,
+  a,
+  .rss,
+  h1,
+  h2,
+  blockquote:before,
+  figcaption {
+    font-family: "Source Serif Pro", sans-serif;
+  }
+
   p,
   td,
   a,

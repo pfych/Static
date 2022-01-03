@@ -183,6 +183,9 @@ body {
   .themeToggle,
   .alignToggle {
     cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
   }
 
   @media screen and (max-width: 70ch) {

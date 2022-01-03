@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>  
-<rss version="2.0">  
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>pfy.ch</title>
     <link>https://pfy.ch</link>
     <description>pfych blogs</description>
+    <atom:link href="https://pfy.ch/rss.xml" rel="self" type="application/rss+xml" />
     RSS_PLACEHOLDER
   </channel>
 </rss>

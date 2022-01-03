@@ -14,7 +14,7 @@ DOMAIN_BASE='www'
 # We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
 FILE_PREFIX='-write'
 # What time of day should RSS report?
-RSS_TIME='00:00:00 AEST'
+RSS_TIME='00:00:00 +1000'
 
 ##########
 # SCRIPT #
@@ -68,7 +68,6 @@ for file in $BLOG_LOCATION/*.md; do
     TOC+=("<a href='/blog/${NAME%$FILE_PREFIX.md}.html'>${NAME%$FILE_PREFIX.md} - $TITLE</a>")
   fi
 done
-
 TOCString=$(printf '%s' "${TOC[@]}")
 sed -i -e "s|TOC|$TOCString|g" ./out/index.html
 
@@ -79,12 +78,14 @@ for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
   DESCRIPTION="$(grep "summary:" "$file" | sed 's/[^ ]* //')"
-  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%A, %d %b %Y $RSS_TIME")"
+  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y $RSS_TIME")"
   DRAFT="$(grep "draft:" "$file" | sed 's/[^ ]* //')"
+  GUID="$(echo "$FILENAME $PUB_DATE" | md5sum | cut -f1 -d" ")"
 
   if [ ! "$DRAFT" ]; then
     RSS_ITEMS+=("
       <item>
+        <guid isPermaLink='false'>${GUID}</guid>
         <title>${TITLE}</title>
         <link>https://${DOMAIN_NAME}/blog/${NAME%$FILE_PREFIX.md}.html</link>
         <description>${DESCRIPTION:-$TITLE}</description>
@@ -109,16 +110,16 @@ for file in $BLOG_LOCATION/images/*; do
 done
 
 # Deploy to AWS
-echo "Deploying..."
-aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
-aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
-aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
-CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
-if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
-  echo "No cloudfront cache"
-else
-  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
-  echo "Invalidated cache"
-fi
+#echo "Deploying..."
+#aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
+#aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
+#aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
+#CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
+#if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
+#  echo "No cloudfront cache"
+#else
+#  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
+#  echo "Invalidated cache"
+#fi
 
 echo "Done!"

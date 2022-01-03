@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function(){
     themeToggle.setAttribute('role', 'button')
     themeToggle.setAttribute('tabIndex', '0')
     themeToggle.setAttribute('class', 'themeToggle')
+    themeToggle.setAttribute('title', 'Change theme')
     themeToggle.append(colourMode === 'light' ? " 🌕" : " 🌑");
     themeToggle.onclick = () => {
       window.localStorage.setItem(
@@ -86,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function(){
     marginToggle.setAttribute('role', 'button')
     marginToggle.setAttribute('tabIndex', '0')
     marginToggle.setAttribute('class', 'alignToggle')
+    marginToggle.setAttribute('title', 'Change margin')
     marginToggle.append(alignMode === 'left' ? '➡️' : '⬅️')
     marginToggle.onclick = () => {
       window.localStorage.setItem(

@@ -12,7 +12,7 @@ BLOG_LOCATION=/home/pfych/Documents/Scratchpad-write
 DOMAIN_NAME='pfy.ch'
 DOMAIN_BASE='www'
 # We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
-FILE_PREFIX='-write' 
+FILE_PREFIX='-write'
 # What time of day should RSS report?
 RSS_TIME='00:00:00 AEST'
 
@@ -60,8 +60,8 @@ for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
   DRAFT="$(grep "draft:" "$file" | sed 's/[^ ]* //')"
-  
-  if [ ! $DRAFT ]; then
+
+  if [ ! "$DRAFT" ]; then
     TOC+=("<a href='/blog/${NAME%$FILE_PREFIX.md}.html'>${NAME%$FILE_PREFIX.md} - $TITLE</a>")
   fi
 done
@@ -78,8 +78,8 @@ for file in $BLOG_LOCATION/*.md; do
   DESCRIPTION="$(grep "summary:" "$file" | sed 's/[^ ]* //')"
   PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%A, %d %b %Y $RSS_TIME")"
   DRAFT="$(grep "draft:" "$file" | sed 's/[^ ]* //')"
-  
-  if [ ! $DRAFT ]; then
+
+  if [ ! "$DRAFT" ]; then
     RSS_ITEMS+=("
       <item>
         <title>${TITLE}</title>

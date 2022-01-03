@@ -108,25 +108,6 @@ for file in $BLOG_LOCATION/images/*; do
   fi
 done
 
-# Dither images
-echo "Dithering images..."
-for file in $BLOG_LOCATION/images/*; do
-  NAME="$(basename "$file")"
-  if [ ! -f "./out/blog/images/${NAME%.*}-grey.png" ]; then
-    echo "Dithering $file"
-    convert "$file" \
-      -resize 720 \
-      -alpha on \
-      +dither \
-      \( -size 2x2 xc:black -size 1x1 xc:white -gravity northwest -composite -write mpr:tile +delete \) \
-      \( +clone -tile mpr:tile -draw "color 0,0 reset" \) \
-      -alpha off -compose copy_opacity -composite \
-      -set colorspace Gray \
-      -colors 16 \
-      "./out/blog/images/${NAME%.*}-grey.png";
-  fi
-done
-
 # Deploy to AWS
 echo "Deploying..."
 aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/

@@ -27,6 +27,9 @@
 }
 
 body {
+  background-color: var(--colour-background);
+  margin: 0 8px 8px;
+
   p,
   td,
   a,
@@ -34,7 +37,9 @@ body {
   h1,
   h2,
   blockquote:before,
-  figcaption {
+  figcaption,
+  pre {
+    color: var(--colour-text);
     font-family: "Source Serif Pro", sans-serif;
   }
 
@@ -42,7 +47,6 @@ body {
   td,
   a,
   .rss {
-    color: #000;
     font-size: 22px;
     font-weight: 400;
   }
@@ -50,10 +54,29 @@ body {
   .container {
     max-width: 70ch;
     padding: 0 16px;
+    margin: var(--container-margin);
   }
 
   h1 {
+    position: sticky;
+    top: 0;
     font-size: 32px;
+    display: flex;
+    justify-content: space-between;
+    margin: unset;
+    padding: 15px 0 20px;
+    z-index: 2;
+    background-color: var(--colour-background);
+    align-items: baseline;
+
+    > span:first-child {
+      display: flex;
+      align-items: baseline;
+
+      a {
+        margin-right: 1ch;
+      }
+    }
   }
 
   h2 {
@@ -69,8 +92,9 @@ body {
   pre {
     font-size: 22px;
     overflow: auto;
-    background: #eee;
-    margin: unset;
+    background: var(--colour-background-sub);
+    margin-top: unset;
+    margin-bottom: 12px;
     padding: 8px;
 
     code {
@@ -108,7 +132,7 @@ body {
   figure {
     position: relative;
     margin: unset;
-    background: #fff;
+    background: var(--colour-background);
 
     figcaption {
       font-style: italic;
@@ -151,27 +175,14 @@ body {
     }
   }
 
-  @media (prefers-color-scheme: dark) {
-    background-color: #000;
+  .themeToggle,
+  .alignToggle {
+    cursor: pointer;
+  }
 
-    p,
-    td,
-    a,
-    h1,
-    h2,
-    pre,
-    blockquote:before,
-    figcaption,
-    .rss {
-      color: #fff;
-    }
-
-    pre {
-      background: #111;
-    }
-
-    figcaption {
-      background: #000;
+  @media screen and (max-width: 70ch) {
+    .alignToggle {
+      display: none;
     }
   }
 }

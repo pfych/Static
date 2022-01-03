@@ -47,6 +47,7 @@ cp src/404.html out/
 cp src/rss.xml out/
 cp src/fonts/* out/fonts
 find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
+find src/ -name '*.ts' -exec tsc {} --outfile ./out/bundle.js \;
 
 # Compile Blogs
 echo "Running pandoc..."

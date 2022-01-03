@@ -60,8 +60,6 @@ body {
   }
 
   h1 {
-    position: sticky;
-    top: 0;
     font-size: 32px;
     display: flex;
     justify-content: space-between;
@@ -70,6 +68,11 @@ body {
     z-index: 2;
     background-color: var(--colour-background);
     align-items: baseline;
+
+    &:first-of-type {
+      position: sticky;
+      top: 0;
+    }
 
     > span:first-child {
       display: flex;

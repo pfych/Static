@@ -14,7 +14,8 @@ DOMAIN_BASE='www'
 # We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
 FILE_PREFIX='-write'
 # What time of day should RSS report?
-RSS_TIME='00:00:00 +1000'
+TIMEZONE='+1000'
+RSS_TIME="00:00:00"
 
 ##########
 # SCRIPT #
@@ -61,8 +62,8 @@ echo "Creating table of contents..."
 TOC=()
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
-  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
-  DRAFT="$(grep "draft:" "$file" | sed 's/[^ ]* //')"
+  TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
+  DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
 
   if [ ! "$DRAFT" ]; then
     TOC+=("<a href='/blog/${NAME%$FILE_PREFIX.md}.html'>${NAME%$FILE_PREFIX.md} - $TITLE</a>")
@@ -74,12 +75,14 @@ sed -i -e "s|TOC|$TOCString|g" ./out/index.html
 # Create RSS feed
 RSS_ITEMS=()
 echo "Creating RSS feed..."
+cd "$BLOG_LOCATION"
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
-  TITLE="$(grep "title:" "$file" | sed 's/[^ ]* //')"
-  DESCRIPTION="$(grep "summary:" "$file" | sed 's/[^ ]* //')"
-  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y $RSS_TIME")"
-  DRAFT="$(grep "draft:" "$file" | sed 's/[^ ]* //')"
+  TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
+  DESCRIPTION="$(grep "^summary:" "$file" | sed 's/[^ ]* //')"
+  EDIT_TIME="$(git log -1 --pretty="format:%ci" "$file" | cut -d" "  -f2)"
+  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y ${EDIT_TIME:-$RSS_TIME} $TIMEZONE")"
+  DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
   GUID="$(echo "$FILENAME $PUB_DATE" | md5sum | cut -f1 -d" ")"
 
   if [ ! "$DRAFT" ]; then
@@ -94,6 +97,7 @@ for file in $BLOG_LOCATION/*.md; do
     ")
   fi
 done
+cd "$PARENT_PATH"
 RSS_STRING=$(printf '%s' "${RSS_ITEMS[@]}" | tr -d '\n')
 sed -i -e "s|RSS_PLACEHOLDER|$RSS_STRING|g" ./out/rss.xml
 
@@ -110,16 +114,21 @@ for file in $BLOG_LOCATION/images/*; do
 done
 
 # Deploy to AWS
-#echo "Deploying..."
-#aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
-#aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
-#aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
-#CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
-#if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
-#  echo "No cloudfront cache"
-#else
-#  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
-#  echo "Invalidated cache"
-#fi
+read -rp "Deploy (y/N)? " choice
+case "$choice" in
+  y|Y )
+    echo "Deploying..."
+    aws s3 sync "$PARENT_PATH/out/" s3://$BUCKET_NAME/
+    aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
+    aws s3 website s3://$BUCKET_NAME/ --index-document index.html --error-document 404.html
+    CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --arg domain "$BUCKET_NAME" '.DistributionList.Items | map(select(.Aliases.Items != null)) | map(select(.Aliases.Items[]  | contains ($domain))) | .[] .Id' | sed 's/"//g')
+    if [ "${CLOUDFRONT_DISTRIBUTION_ID:-"_"}" == "_" ]; then
+      echo "No cloudfront cache"
+    else
+      aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" >> /dev/null
+      echo "Invalidated cache"
+    fi;;
+  *) echo "Skipping deploy...";;
+esac
 
 echo "Done!"

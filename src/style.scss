@@ -38,7 +38,8 @@ body {
   h2,
   blockquote:before,
   figcaption,
-  pre {
+  pre,
+  li {
     color: var(--colour-text);
     font-family: "Source Serif Pro", sans-serif;
   }
@@ -46,7 +47,8 @@ body {
   p,
   td,
   a,
-  .rss {
+  .rss,
+  li {
     font-size: 22px;
     font-weight: 400;
   }

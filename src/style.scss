@@ -197,6 +197,65 @@ body {
       display: none;
     }
   }
+
+  .sourceCode {
+    // KeyWord
+    .kw {
+      color: #268BD2;
+    }
+
+    // DataType
+    .dt {
+      color: #268BD2;
+    }
+
+    // DecVal (decimal value), BaseN, Float
+    .dv, .bn, .fl {
+      color: #D33682;
+    }
+
+    // Char
+    .ch {
+      color: #DC322F;
+    }
+
+    // String
+    .st {
+      color: #2AA198;
+    }
+
+    // Comment
+    .co {
+      color: #93A1A1;
+    }
+
+    // Other
+    .ot {
+      color: #A57800;
+    }
+
+    // Alert
+    .al {
+      color: #CB4B16;
+      font-weight: bold;
+    }
+
+    // Function
+    .fu {
+      color: #268BD2;
+    }
+
+    // Variable
+    .va {
+      color: var(--colour-text);
+    }
+
+    // Error
+    .er {
+      color: #D30102;
+      font-weight: bold;
+    }
+  }
 }
 
 

@@ -14,7 +14,7 @@ DOMAIN_BASE='www'
 # We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
 FILE_PREFIX='-write'
 # What time of day should RSS report?
-TIMEZONE='+1000'
+TIMEZONE=$(date +"%z")
 RSS_TIME="00:00:00"
 
 ##########
@@ -79,11 +79,15 @@ cd "$BLOG_LOCATION"
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
-  DESCRIPTION="$(grep "^summary:" "$file" | sed 's/[^ ]* //')"
   EDIT_TIME="$(git log -1 --pretty="format:%ci" "$file" | cut -d" "  -f2)"
   PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y ${EDIT_TIME:-$RSS_TIME} $TIMEZONE")"
   DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
   GUID="$(echo "$FILENAME $PUB_DATE" | md5sum | cut -f1 -d" ")"
+
+  FILE_CONTENT=$(cat "${PARENT_PATH}out/blog/${NAME%$FILE_PREFIX.md}.html")
+  FIXED_IMAGES=$(echo "$FILE_CONTENT" | sed "s/<img src=\"\./<img src=\"https:\/\/pfy\.ch\/blog/g" )
+  FIXED_QUOTES=$(echo "$FIXED_IMAGES" | sed "s/\“/\"/g" | sed "s/\”/\"/g" | sed "s/\’/\'/g")
+  FIXED_FILE="${FIXED_QUOTES#*</h1>}"
 
   if [ ! "$DRAFT" ]; then
     RSS_ITEMS+=("
@@ -91,7 +95,8 @@ for file in $BLOG_LOCATION/*.md; do
         <guid isPermaLink='false'>${GUID}</guid>
         <title>${TITLE}</title>
         <link>https://${DOMAIN_NAME}/blog/${NAME%$FILE_PREFIX.md}.html</link>
-        <description>${DESCRIPTION:-$TITLE}</description>
+        <description><![CDATA[${FIXED_FILE%<\hr />*}]]></description>
+        <author>pfych</author>
         <pubDate>${PUB_DATE}</pubDate>
       </item>
     ")
@@ -99,7 +104,17 @@ for file in $BLOG_LOCATION/*.md; do
 done
 cd "$PARENT_PATH"
 RSS_STRING=$(printf '%s' "${RSS_ITEMS[@]}" | tr -d '\n')
-sed -i -e "s|RSS_PLACEHOLDER|$RSS_STRING|g" ./out/rss.xml
+RSS_OUTPUT="<?xml version='1.0' encoding='ISO-8859-1' ?>
+<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
+  <channel>
+    <title>pfy.ch</title>
+    <link>https://pfy.ch</link>
+    <description>pfych blogs</description>
+    <atom:link href='https://pfy.ch/rss.xml' rel='self' type='application/rss+xml' />
+    $RSS_STRING
+  </channel>
+</rss>"
+echo "$RSS_OUTPUT" > ./out/rss.xml
 
 # Move images
 echo "Resizing images..."

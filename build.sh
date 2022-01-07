@@ -79,8 +79,8 @@ cd "$BLOG_LOCATION"
 for file in $BLOG_LOCATION/*.md; do
   NAME="$(basename "$file")"
   TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
-  EDIT_TIME="$(git log -1 --pretty="format:%ci" "$file" | cut -d" "  -f2)"
-  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y ${EDIT_TIME:-$RSS_TIME} $TIMEZONE")"
+  EDIT_TIME="$(git log -1 --pretty="format:%ci" "$file" | cut -d" "  -f2,3)"
+  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y ${EDIT_TIME:-$RSS_TIME}")"
   DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
   GUID="$(echo "$FILENAME $PUB_DATE" | md5sum | cut -f1 -d" ")"
 

@@ -45,88 +45,24 @@ mkdir -p out/blog/images
 mkdir -p out/fonts/
 cp src/index.html out/
 cp src/404.html out/
-cp src/rss.xml out/
 cp src/fonts/* out/fonts
 find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
 find src/ -name '*.ts' -exec tsc {} --outfile ./out/bundle.js \;
 
-# Compile Blogs
-echo "Running pandoc..."
-for file in $BLOG_LOCATION/*.md; do
-  NAME="$(basename "$file")"
-  pandoc "$file" -o ./out/blog/"${NAME%$FILE_PREFIX.md}".html --template ./src/blog/index.html
-done
+if [ ! -f "./static-rs" ]; then
+  curl -s https://api.github.com/repos/pfych/static-rs/releases/latest \
+    | grep "browser_download_url" \
+    | cut -d '"' -f 4 \
+    | wget -i - -O static-rs
+fi
 
-# Create a table of contents
-echo "Creating table of contents..."
-TOC=()
-for file in $BLOG_LOCATION/*.md; do
-  NAME="$(basename "$file")"
-  TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
-  DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
+if [ ! -f "./config.json" ]; then
+  echo "Missing config file"
+  exit 1
+fi
 
-  if [ ! "$DRAFT" ]; then
-    TOC+=("<a href='/blog/${NAME%$FILE_PREFIX.md}.html'>${NAME%$FILE_PREFIX.md} - $TITLE</a>")
-  fi
-done
-TOCString=$(printf '%s' "${TOC[@]}")
-sed -i -e "s|TOC|$TOCString|g" ./out/index.html
-
-# Create RSS feed
-RSS_ITEMS=()
-echo "Creating RSS feed..."
-cd "$BLOG_LOCATION"
-for file in $BLOG_LOCATION/*.md; do
-  NAME="$(basename "$file")"
-  TITLE="$(grep "^title:" "$file" | sed 's/[^ ]* //')"
-  EDIT_TIME="$(git log -1 --pretty="format:%ci" "$file" | cut -d" "  -f2,3)"
-  PUB_DATE="$(date -d"${NAME%$FILE_PREFIX.md}" +"%a, %d %b %Y ${EDIT_TIME:-$RSS_TIME}")"
-  DRAFT="$(grep "^draft:" "$file" | sed 's/[^ ]* //')"
-  GUID="$(echo "$FILENAME $PUB_DATE" | md5sum | cut -f1 -d" ")"
-
-  FILE_CONTENT=$(cat "${PARENT_PATH}out/blog/${NAME%$FILE_PREFIX.md}.html")
-  FIXED_IMAGES=$(echo "$FILE_CONTENT" | sed "s/<img src=\"\./<img src=\"https:\/\/pfy\.ch\/blog/g" )
-  FIXED_QUOTES=$(echo "$FIXED_IMAGES" | sed "s/\“/\"/g" | sed "s/\”/\"/g" | sed "s/\’/\'/g")
-  FIXED_FILE="${FIXED_QUOTES#*</h1>}"
-
-  if [ ! "$DRAFT" ]; then
-    RSS_ITEMS+=("
-      <item>
-        <guid isPermaLink='false'>${GUID}</guid>
-        <title>${TITLE}</title>
-        <link>https://${DOMAIN_NAME}/blog/${NAME%$FILE_PREFIX.md}.html</link>
-        <description><![CDATA[${FIXED_FILE%<\hr />*}]]></description>
-        <author>pfych</author>
-        <pubDate>${PUB_DATE}</pubDate>
-      </item>
-    ")
-  fi
-done
-cd "$PARENT_PATH"
-RSS_STRING=$(printf '%s' "${RSS_ITEMS[@]}" | tr -d '\n')
-RSS_OUTPUT="<?xml version='1.0' encoding='ISO-8859-1' ?>
-<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
-  <channel>
-    <title>pfy.ch</title>
-    <link>https://pfy.ch</link>
-    <description>pfych blogs</description>
-    <atom:link href='https://pfy.ch/rss.xml' rel='self' type='application/rss+xml' />
-    $RSS_STRING
-  </channel>
-</rss>"
-echo "$RSS_OUTPUT" > ./out/rss.xml
-
-# Move images
-echo "Resizing images..."
-for file in $BLOG_LOCATION/images/*; do
-  NAME="$(basename "$file")"
-  if [ ! -f "./out/blog/images/${NAME%.*}.jpg" ]; then
-    echo "Resizing: $file"
-    convert "$file" \
-      -resize 720 \
-      "./out/blog/images/${NAME%.*}.jpg";
-  fi
-done
+chmod +x ./static-rs
+./static-rs
 
 # Deploy to AWS
 read -rp "Deploy (y/N)? " choice

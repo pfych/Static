@@ -8,14 +8,8 @@ shopt -s failglob
 ###############
 
 export AWS_REGION='ap-southeast-2'
-BLOG_LOCATION=/home/pfych/Documents/Scratchpad-write
 DOMAIN_NAME='pfy.ch'
 DOMAIN_BASE='www'
-# We assume filename will be YY-MM-DD-FILE_PREFIX.md (ie. 21-12-20-write.md)
-FILE_PREFIX='-write'
-# What time of day should RSS report?
-TIMEZONE=$(date +"%z")
-RSS_TIME="00:00:00"
 
 ##########
 # SCRIPT #

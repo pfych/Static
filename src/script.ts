@@ -27,6 +27,17 @@ const getInitialAlign = () => {
   return 'left';
 }
 
+const getInitialWidth = () => {
+  const persistedWidthPreference = window.localStorage.getItem('width-mode');
+  const hasPersistedPreference = typeof persistedWidthPreference === 'string';
+
+  if (hasPersistedPreference) {
+    return persistedWidthPreference;
+  }
+
+  return 'small';
+}
+
 let colourMode = getInitialColorMode() || 'light';
 const setColourMode = () => {
   colourMode = getInitialColorMode() || 'light';
@@ -54,8 +65,8 @@ const setAlignMode = () => {
   const root = document.documentElement;
 
   root.style.setProperty(
-    '--container-margin',
-    alignMode === 'left' ? '0' : 'auto'
+    '--container-size',
+    alignMode === 'left' ? '70ch' : '100%'
   );
 }
 
@@ -87,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function(){
     marginToggle.setAttribute('role', 'button')
     marginToggle.setAttribute('tabIndex', '0')
     marginToggle.setAttribute('class', 'alignToggle')
-    marginToggle.setAttribute('title', 'Change margin')
+    marginToggle.setAttribute('title', 'Change width')
     marginToggle.append(alignMode === 'left' ? '➡️' : '⬅️')
     marginToggle.onclick = () => {
       window.localStorage.setItem(

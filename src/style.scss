@@ -54,9 +54,9 @@ body {
   }
 
   .container {
-    max-width: 70ch;
+    max-width: var(--container-size);
     padding: 0 16px;
-    margin: var(--container-margin);
+    margin: 0;
   }
 
   h1 {
@@ -185,7 +185,8 @@ body {
   }
 
   .themeToggle,
-  .alignToggle {
+  .alignToggle,
+  .widthToggle {
     cursor: pointer;
     user-select: none;
     -moz-user-select: none;
@@ -193,7 +194,8 @@ body {
   }
 
   @media screen and (max-width: 70ch) {
-    .alignToggle {
+    .alignToggle,
+    .widthToggle {
       display: none;
     }
   }

@@ -2,6 +2,7 @@
   "blog_location": "/home/pfych/Documents/Scratchpad-write",
   "blog_template": "./src/blog/index.html",
   "index_template": "./src/index.html",
+  "image_page_template": "./src/images.html",
   "image_location": "/home/pfych/Documents/Scratchpad-write/images",
   "author": "pfych",
   "url": "https://pfy.ch",

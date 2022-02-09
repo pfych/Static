@@ -134,6 +134,7 @@ body {
     flex-direction: column-reverse;
 
     .urbit {
+      overflow: unset;
       position: relative;
 
       &::before {
@@ -141,6 +142,18 @@ body {
         content: "~";
         left: -1.2ch;
       }
+    }
+
+    a {
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .name {
+      text-decoration: underline;
     }
   }
 

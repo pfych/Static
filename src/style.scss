@@ -132,6 +132,16 @@ body {
   .tableOfContents {
     display: flex;
     flex-direction: column-reverse;
+
+    .urbit {
+      position: relative;
+
+      &::before {
+        position: absolute;
+        content: "~";
+        left: -1.2ch;
+      }
+    }
   }
 
   figure {

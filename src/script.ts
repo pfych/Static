@@ -69,7 +69,7 @@ const createSideNotes = () => {
 
     sideNote.appendChild(number);
     Array.from(footnoteContent).forEach((item) => {
-      const editItem: HTMLParagraphElement = item.cloneNode(true)
+      const editItem = item.cloneNode(true)
       const aTags = editItem.getElementsByTagName('a')
       aTags.item(aTags.length - 1).remove();
       sideNote.append(editItem)

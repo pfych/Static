@@ -98,34 +98,9 @@ pre {
   margin-top: unset;
   margin-bottom: 12px;
   padding: 8px;
-
-  code {
-    > span {
-      &:not(:first-of-type) {
-        margin-left: -25px;
-      }
-    }
-  }
 }
 
-p,
-td,
-a,
-.rss,
-h1,
-h2,
-h3,
-h4,
-blockquote:before,
-figcaption,
-pre,
-li,
-.sidenote {
-  color: var(--colour-text);
-  font-family: "Source Serif Pro", sans-serif;
-  hyphens: auto;
-  text-align: justify;
-}
+
 
 .container {
   max-width: 70ch;
@@ -164,61 +139,31 @@ li,
   padding: 8px;
   border: 1px solid;
   display: flex;
+  color: var(--colour-text);
+  font-family: "Source Serif Pro", sans-serif;
+  font-size: 18px;
+  line-height: 22px;
 
   .number {
     margin-right: 0.5ch;
   }
-}
 
-h1 {
-  font-size: 32px;
-  display: flex;
-  justify-content: space-between;
-  margin: unset;
-  padding: 15px 0 20px;
-  z-index: 3;
-  background-color: var(--colour-background);
-  align-items: baseline;
-
-  &:first-of-type {
-    position: sticky;
-    top: 0;
+  p {
+    margin-bottom: unset;
+    line-height: unset;
   }
-
-  > span:first-child {
-    display: flex;
-    align-items: baseline;
-
-    a {
-      margin-right: 1ch;
-    }
-  }
-}
-
-h2 {
-  font-size: 28px;
-  line-height: 32px;
-}
-
-h3 {
-  font-size: 22px;
-  line-height: 26px;
-}
-
-p {
-  margin-top: unset;
-  margin-bottom: 12px;
-  position: relative;
-}
-
-p,
-a,
-li,
-.sidenote {
-  font-size: 18px;
-  line-height: 22px;
 }
 
 .footnote-ref {
   margin-left: 0.25ch;
+}
+
+p + p {
+  text-indent: 1em;
+}
+
+sup {
+  vertical-align: top;
+  position: relative;
+  top: -0.5em;
 }

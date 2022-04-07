@@ -38,14 +38,6 @@ const setColourMode = () => {
 };
 setColourMode();
 
-function getOffset(el) {
-  const rect = el.getBoundingClientRect();
-  return {
-    left: rect.left,
-    top: rect.top,
-  };
-}
-
 const createSideNotes = () => {
   const body = document.getElementsByClassName("container")[0];
   const footnotes = Array.from(
@@ -65,19 +57,23 @@ const createSideNotes = () => {
     );
     const sideNote = document.createElement("span");
     const number = document.createElement("span");
-    const offset = footnoteOrigin.getBoundingClientRect();
-
-    console.log(offset);
+    const offset = footnoteOrigin.getBoundingClientRect() ;
+    const footnoteContent = footnote.getElementsByTagName("p")
 
     number.append(`${footnote.id.replace("fn", "")}.`);
     number.className = "number";
 
     sideNote.id = `${footnote.id}-side`;
     sideNote.className = "sidenote";
-    sideNote.style.top = `${offset.y - 8 || 0}px`;
+    sideNote.style.top = `${(offset.top - body.getBoundingClientRect().top) - 8 || 0}px`;
 
     sideNote.appendChild(number);
-    sideNote.append(`${footnote.innerText.replace("↩︎", "")}`);
+    Array.from(footnoteContent).forEach((item) => {
+      const editItem: HTMLParagraphElement = item.cloneNode(true)
+      const aTags = editItem.getElementsByTagName('a')
+      aTags.item(aTags.length - 1).remove();
+      sideNote.append(editItem)
+    })
 
     if (i % 2) {
       leftSidenoteContainer.appendChild(sideNote);

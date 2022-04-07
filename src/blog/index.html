@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"></meta>
   <title>pfych - $title$</title>
-  <script src="../bundle.js"></script>
   <link href="../bundle.css" rel="stylesheet" />
+  <script src="../bundle.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="https://pfy.ch/rss.xml" />
 
@@ -12,41 +12,44 @@
 
   <meta name="twitter:site" content="@puffycheeses"></meta>
   $if(attribution)$
-    <meta name="twitter:creator" content="@$attribution$"></meta>
+  <meta name="twitter:creator" content="@$attribution$"></meta>
   $else$
-    <meta name="twitter:creator" content="@puffycheeses"></meta>
+  <meta name="twitter:creator" content="@puffycheeses"></meta>
   $endif$
 
   $if(image)$
-    <meta name="og:image" content="https://pfy.ch/blog/images/$image$"></meta>
-    <meta name="twitter:image" content="https://pfy.ch/blog/images/$image$"></meta>
-    <meta name="twitter:card" content="summary_large_image"></meta>
-    $if(alt)$
-      <meta name="twitter:image:alt" content="$alt$"></meta>
-    $endif$
+  <meta name="og:image" content="https://pfy.ch/blog/images/$image$"></meta>
+  <meta name="witter:image" content="https://pfy.ch/blog/images/$image$"></meta>
+  <meta name="twitter:card" content="summary_large_image"></meta>
+  $if(alt)$
+  <meta name="twitter:image:alt" content="$alt$"></meta>
+  $endif$
   $else$
-    <meta name="twitter:card" content="summary"></meta>
+  <meta name="twitter:card" content="summary"></meta>
   $endif$
 
   $if(summary)$
-    <meta name="og:description" content="$summary$"></meta>
+  <meta name="og:description" content="$summary$"></meta>
   $endif$
 </head>
 <body>
 <div class="container">
   $if(draft)$
-    <h1>THIS IS AN UN-EDITED DRAFT</h1>
-    <p>
-      This post has been marked as a draft meaning it
-      has not been published in the TOC or RSS.
-    </p>
-    <p>
-      If you believe this to be an error please contact me.
-    </p>
-    <hr />
+  <h1>THIS IS AN UN-EDITED DRAFT</h1>
+  <p>
+    This post has been marked as a draft meaning it
+    has not been published in the TOC or RSS.
+  </p>
+  <p>
+    If you believe this to be an error please contact me.
+  </p>
+  <hr />
   $endif$
   <h1><span><a href="/"><️</a> $title$</span></h1>
-  $body$
+  <div class="contents">$toc$</div>
+  <article class="article">
+    $body$
+  </article>
   <hr />
   <p>
     contact <i>at</i> pfy <i>dot</i> ch

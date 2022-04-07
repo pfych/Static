@@ -40,8 +40,8 @@ mkdir -p out/fonts/
 cp src/index.html out/
 cp src/404.html out/
 cp src/fonts/* out/fonts
-find src/ -name '*.scss' -exec sass {} ./out/bundle.css \;
-find src/ -name '*.ts' -exec tsc {} --outfile ./out/bundle.js \;
+sass src/style.scss ./out/bundle.css
+find src/ -name '*.ts' -exec tsc --lib es2021,dom {} --outfile ./out/bundle.js \;
 
 if [ ! -f "./static-rs" ]; then
   curl -s https://api.github.com/repos/pfych/static-rs/releases/latest \

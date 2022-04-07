@@ -1,0 +1,224 @@
+.sourceCode {
+  // KeyWord
+  .kw {
+    color: #268BD2;
+  }
+
+  // DataType
+  .dt {
+    color: #268BD2;
+  }
+
+  // DecVal (decimal value), BaseN, Float
+  .dv, .bn, .fl {
+    color: #D33682;
+  }
+
+  // Char
+  .ch {
+    color: #DC322F;
+  }
+
+  // String
+  .st {
+    color: #2AA198;
+  }
+
+  // Comment
+  .co {
+    color: #93A1A1;
+  }
+
+  // Other
+  .ot {
+    color: #A57800;
+  }
+
+  // Alert
+  .al {
+    color: #CB4B16;
+    font-weight: bold;
+  }
+
+  // Function
+  .fu {
+    color: #268BD2;
+  }
+
+  // Variable
+  .va {
+    color: var(--colour-text);
+  }
+
+  // Error
+  .er {
+    color: #D30102;
+    font-weight: bold;
+  }
+}
+
+blockquote {
+  display: flex;
+  margin-left: unset;
+  font-style: italic;
+
+  &:before {
+    font-size: 22px;
+    flex: 0 0 auto;
+    content: ">";
+    margin-right: 1ch;
+  }
+
+  p {
+    flex: 1 1 auto;
+    margin: unset;
+  }
+}
+
+figure {
+  position: relative;
+  margin: unset;
+  background: var(--colour-background);
+
+  figcaption {
+    font-style: italic;
+    padding-top: 8px;
+    margin-bottom: 8px;
+
+    &::before {
+      content: "┗ "
+    }
+  }
+}
+
+pre {
+  font-size: 22px;
+  overflow: auto;
+  background: var(--colour-background-sub);
+  margin-top: unset;
+  margin-bottom: 12px;
+  padding: 8px;
+
+  code {
+    > span {
+      &:not(:first-of-type) {
+        margin-left: -25px;
+      }
+    }
+  }
+}
+
+p,
+td,
+a,
+.rss,
+h1,
+h2,
+h3,
+h4,
+blockquote:before,
+figcaption,
+pre,
+li,
+.sidenote {
+  color: var(--colour-text);
+  font-family: "Source Serif Pro", sans-serif;
+  hyphens: auto;
+  text-align: justify;
+}
+
+.container {
+  max-width: 70ch;
+  padding: 0 16px;
+  margin: auto;
+  position: relative;
+}
+
+.rightSidenoteContainer {
+  left: 75ch;
+}
+
+.leftSidenoteContainer {
+  right: 75ch;
+}
+
+.rightSidenoteContainer,
+.leftSidenoteContainer {
+  position: absolute;
+  height: 100%;
+  width: calc(50vw - (50% + 104px));
+  top: 0;
+  max-width: 60ch;
+  min-width: 30ch;
+
+  @media screen and (max-width: 1300px) {
+    display: none;
+  }
+}
+
+.sidenote {
+  background-color: var(--colour-background);
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid;
+  display: flex;
+
+  .number {
+    margin-right: 0.5ch;
+  }
+}
+
+h1 {
+  font-size: 32px;
+  display: flex;
+  justify-content: space-between;
+  margin: unset;
+  padding: 15px 0 20px;
+  z-index: 3;
+  background-color: var(--colour-background);
+  align-items: baseline;
+
+  &:first-of-type {
+    position: sticky;
+    top: 0;
+  }
+
+  > span:first-child {
+    display: flex;
+    align-items: baseline;
+
+    a {
+      margin-right: 1ch;
+    }
+  }
+}
+
+h2 {
+  font-size: 28px;
+  line-height: 32px;
+}
+
+h3 {
+  font-size: 22px;
+  line-height: 26px;
+}
+
+p {
+  margin-top: unset;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+p,
+a,
+li,
+.sidenote {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.footnote-ref {
+  margin-left: 0.25ch;
+}

@@ -16,6 +16,28 @@ function getInitialColorMode() {
   return "light";
 }
 
+// Thanks https://stackoverflow.com/a/60949881/3673022
+const runOnImagesLoad = (func: () => void): void => {
+  Promise.all(Array.from(document.images).map(img => {
+    if (img.complete) {
+      return Promise.resolve(img.naturalHeight !== 0);
+    }
+
+    return new Promise(resolve => {
+      img.addEventListener('load', () => resolve(true));
+      img.addEventListener('error', () => resolve(false));
+    });
+  })).then(results => {
+    if (results.every(res => res)) {
+      console.log('all images loaded successfully');
+    } else {
+      console.log('some images failed to load, all finished loading');
+    }
+
+    func()
+  });
+}
+
 let colourMode = getInitialColorMode() || "light";
 const setColourMode = () => {
   colourMode = getInitialColorMode() || "light";
@@ -57,7 +79,7 @@ const createSideNotes = () => {
     );
     const sideNote = document.createElement("span");
     const number = document.createElement("span");
-    const offset = footnoteOrigin.getBoundingClientRect() ;
+    const offset = footnoteOrigin.getBoundingClientRect();
     const footnoteContent = footnote.getElementsByTagName("p")
 
     number.append(`${footnote.id.replace("fn", "")}.`);
@@ -69,7 +91,7 @@ const createSideNotes = () => {
 
     sideNote.appendChild(number);
     Array.from(footnoteContent).forEach((item) => {
-      const editItem = item.cloneNode(true)
+      const editItem = item.cloneNode(true) as unknown as HTMLParagraphElement
       const aTags = editItem.getElementsByTagName('a')
       aTags.item(aTags.length - 1).remove();
       sideNote.append(editItem)
@@ -108,5 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
     mainHeading.append(controls);
   }
 
-  createSideNotes();
+  runOnImagesLoad(createSideNotes)
 });
+

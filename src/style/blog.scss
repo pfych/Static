@@ -151,7 +151,6 @@ pre {
 
   p {
     margin-bottom: unset;
-    line-height: unset;
   }
 }
 
@@ -166,5 +165,15 @@ p + p {
 sup {
   vertical-align: top;
   position: relative;
-  top: -0.5em;
+  top: -0.25em;
+}
+
+img + .footnote-ref {
+  sup {
+   top: 0
+  }
+
+  &:after {
+    content: "└ More info"
+  }
 }

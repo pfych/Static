@@ -37,9 +37,12 @@ mkdir -p out/
 mkdir -p out/blog/
 mkdir -p out/blog/images
 mkdir -p out/fonts/
+mkdir -p out/rnd
+mkdir -p out/rnd/images
 cp src/index.html out/
 cp src/404.html out/
-cp src/fonts/* out/fonts
+cp -r src/fonts/* out/fonts
+cp -r src/rnd/* out/rnd
 sass src/style.scss ./out/bundle.css
 find src/ -name '*.ts' -exec tsc --lib es2021,dom {} --outfile ./out/bundle.js \;
 

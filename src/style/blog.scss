@@ -162,6 +162,10 @@ p + p {
   text-indent: 1em;
 }
 
+hr + h1 {
+  padding-top: 6px;
+}
+
 sup {
   vertical-align: top;
   position: relative;
